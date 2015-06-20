@@ -3,8 +3,8 @@ define([
     'jquery',
     'backbone',
     'models/requestModel',
-    'views/searchView'
-], function ($, Backbone, RequestModel, SearchView) {
+    'views/mainView'
+], function ($, Backbone, RequestModel, MainView) {
     'use strict';
 
     var RouterRouter = Backbone.Router.extend({
@@ -18,8 +18,8 @@ define([
         },
 
         index:function(){
-            this.searchView = new SearchView({model:this.requestModel});
-            $('#main-content').html(this.searchView.render().el);
+            this.mainView = new MainView({model:this.requestModel});
+            $('#main-content').html(this.mainView.render().el);
         }
     });
 

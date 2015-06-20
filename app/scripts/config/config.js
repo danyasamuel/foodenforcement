@@ -33,12 +33,6 @@ require.config({
 
         geocomplete: '../vendor/geocomplete/jquery.geocomplete',
 
-        backboneModelBinder: '../vendor/Backbone.ModelBinder/Backbone.ModelBinder',
-
-        backboneValidateAll: '../vendor/Backbone.validateAll/Backbone.validateAll',
-
-        backboneValidation: './helpers/backboneValidation',
-
         blockui: '../vendor/blockui/jquery.blockUI'        
         
     },
