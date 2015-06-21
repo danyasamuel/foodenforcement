@@ -19,33 +19,19 @@ define([
 		"name": "Class III"
 	}];
 
-	var collResults = {
-					meta: {
-						disclaimer: "openFDA is a beta research project and not for clinical use. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated.",
-						license: "http://open.fda.gov/license",
-						last_updated: "2015-05-31"
-					},
-					results: [
-						{
-							term: "Class II",
-							count: 3978
-						},
-						{
-							term: "Class I",
-							count: 3767
-						},
-						{
-							term: "Class III",
-							count: 271
-						}
-					]
-				};
 	// Jasmine View Test suite for mainView  
 	describe('mainView: ', function() {
 
 		// Runs before every View spec
 		beforeEach(function() {
 			this.model = new RequestModel();
+			//set the model values
+			this.model.set({
+				'skip':25,
+				'searchTerms':'cheese',
+				'recallStatus':'ongoing',
+				'distributionPattern':'OH,CA'
+			});
 			// Instantiates a new View instance
 			this.view = new MainView({
 				model: this.model
@@ -65,6 +51,44 @@ define([
 		it("should load the classification template", function() {
 			this.view.loadTemplate('classificationSection', ClassificationTemplate, classResults, this.model);
 		});
+
+		it('should display the results', function(){
+			this.view.displayResults();
+		});
+		it('should display the next set of results',function(){
+			var e = jQuery.Event("click", {
+				target: $('<a href="javascript:void(0)" id="next">Next</a>')
+			});
+			e.keyCode = 13;
+			this.view.moveNext(e);
+		});
+		it('should display the prev set of results', function(){
+			var e = jQuery.Event("click", {
+				target: $('<a href="javascript:void(0)" id="prev">Previous</a>')
+			});
+			e.keyCode = 13;
+			this.view.movePrev(e);			
+		});
+		it('should trigger the getResults Method with no array terms',function(){
+			var e = jQuery.Event("click", {
+				target: $('<button id="btnSearch" class="btn btn-primary">Search</button>')
+			});
+			e.keyCode = 13;
+			this.view.searchTerms ='cheese';
+			this.view.recallStatuses = 'ongoing';
+			this.view.stateList = 'CA';
+			this.view.getResults(e);
+		});
+		it('should trigger the getResults Method with array terms',function(){
+			var e = jQuery.Event("click", {
+				target: $('<button id="btnSearch" class="btn btn-primary">Search</button>')
+			});
+			e.keyCode = 13;
+			this.view.searchTerms =['cheese','meat'];
+			this.view.recallStatuses = ['ongoing','open'];
+			this.view.stateList = ['CA','OH'];
+			this.view.getResults(e);
+		});		
 
 		// Runs after every view spec
 		afterEach(function() {

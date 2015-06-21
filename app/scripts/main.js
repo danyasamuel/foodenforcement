@@ -1,9 +1,9 @@
 // Main application 
 require(['config/config'], function() {
     'use strict';
-    require(['jquery', 'backbone', 'jqueryui', 'respond', 'bootstrap','geocomplete', 'selectize', 'config/globals','routers/router', 'views/headerView', 'views/footerView',
+    require(['jquery', 'backbone', 'jqueryui', 'respond', 'bootstrap','geocomplete', 'selectize', 'slider','config/globals','routers/router', 'views/headerView', 'views/footerView',
           'backboneModelBinder', 'backboneValidation', 'helpers/validationHelper', 'backboneValidateAll', 'helpers/backboneHelper','blockui'],
-        function($, Backbone, jqueryui, respond, bootstrap, geocomplete,globals, selectize,Router, HeaderView, FooterView,
+        function($, Backbone, jqueryui, respond, bootstrap, geocomplete,globals, selectize, slider,Router, HeaderView, FooterView,
             ModelBinder, BBValidation, ValidationHelper, BBValidateAll, backboneHelper,BlockUI) {
 
             $(document).ready(function() {

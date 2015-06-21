@@ -41,7 +41,9 @@ require.config({
 
         backboneValidateAll: '../vendor/Backbone.validateAll/Backbone.validateAll',
 
-        backboneValidation: './helpers/backboneValidation'  
+        backboneValidation: './helpers/backboneValidation',
+
+        slider:'../vendor/bootstrap-slider/bootstrap-slider.min'
         
     },
 
@@ -104,6 +106,11 @@ require.config({
             'deps': ['jquery', 'underscore', 'backbone', 'backboneValidateAll'],
             'exports': 'backboneValidation'
         },
+
+        slider:{
+            deps: ['jquery', 'bootstrap'],
+            exports: 'slider'
+        }
     }
 
 });

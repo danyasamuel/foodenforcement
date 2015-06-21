@@ -14,26 +14,35 @@ define([
 		// Default values for all of the Model attributes
 		defaults: {
 			searchTerms:'',
-			classification:'',
-			recallFirm:'',
 			distributionPattern:'',
-			recallStatus:''
+			recallStatus:'',
+			skip:0
 		},
 
 		clearModel: function() {
 			this.set({
 				searchTerms:'',
-				classification:'',
-				recallFirm:'',
 				distributionPattern:'',
-				recallStatus:''
+				recallStatus:'',
+				skip:0
 			});
 		},
 
 		generateURL: function() {
 			var serviceURL = '';
-			serviceURL = window.gblResults + 'search=product_description:' + this.get('searchTerms').replace(',','+');
-			serviceURL = serviceURL + '&limit=5'
+			serviceURL = window.gblResults
+
+			if(this.get('searchTerms')){
+			 	serviceURL = serviceURL + 'search=product_description:' + this.get('searchTerms').replace(',','+');
+			}
+
+			if(this.get('recallStatus')){
+				serviceURL = serviceURL + '+AND+recall_status=' + this.get('recallStatus').replace(',','+');
+			}
+			if(this.get('distributionPattern')){
+				serviceURL = serviceURL + '+AND+distribution_pattern=nationwide+' + this.get('distributionPattern').replace(',','+');
+			}
+			serviceURL = serviceURL + '&skip='+ ((this.get('skip') === undefined)?0:this.get('skip')) + '&limit=5'
 
 			return serviceURL
 		}

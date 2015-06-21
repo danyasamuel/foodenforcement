@@ -2,9 +2,9 @@
 // ----------
 define([
 	'jquery', 'backbone', 'text!templates/main.html', 'text!locale/main.json', 'text!locale/es_mx/main.json',
-	'text!templates/classificationTemplate.html','text!templates/distributionPattern.html','text!templates/recallFirmTemplate.html','text!templates/recallStatusTemplate.html',
+	'text!templates/classificationTemplate.html','text!templates/distributionPattern.html','text!templates/stateTemplate.html','text!templates/recallStatusTemplate.html',
 	'text!templates/resultsSubTemplate.html','collections/itemsCollection', 'collections/recalledFoodCollection'
-], function($, Backbone, template, content, contentES,ClassificationTemplate, DistributionPatternTemplate,RecallFirmTemplate, RecallStatusTemplate,
+], function($, Backbone, template, content, contentES,ClassificationTemplate, DistributionPatternTemplate, StateTemplate,RecallStatusTemplate,
 	ResultsSubTemplate,ItemsCollection,RecalledFoodCollection) {
 	'use strict';
 
@@ -14,6 +14,12 @@ define([
 		model: '',
 
 		searchTerms:'',
+
+		recallStatuses: '',
+
+		stateList: '',
+
+		totalCount:0,
 		// View constructor
 		initialize: function(options) {
 
@@ -26,6 +32,8 @@ define([
 		// View Event Handlers
 		events: {
 			'click button[id="btnSearch"]': 'getResults',
+			'click a[id="prev"]': 'movePrev',
+			'click a[id="next"]': 'moveNext'
 		},
 
 		// Renders the view's template to the UI
@@ -36,7 +44,8 @@ define([
 				content: JSON.parse(content)
 			});
 
-			this.distPattern = _.template(DistributionPatternTemplate,{});
+			this.stateTemplate = _.template(StateTemplate,{});
+			this.distPatternTemplate = _.template(DistributionPatternTemplate,{});
 			// Dynamically updates the UI with the view's template
 			this.$el.html(this.template);	
 
@@ -46,9 +55,16 @@ define([
 			var self = this;
 			this.$el.find('#select-fooditem').selectize({onChange: function(value) {
                self.searchTerms = value;
-          }});
+          	}});
+			this.$el.find('#select-recallStatus').selectize({onChange: function(value) {
+               self.recallStatuses = value;
+          	}});
 
-			this.ModelBindAndValidation(this.model, this.$el);
+            this.$el.find('#select-State').selectize({onChange: function(value) {
+               self.stateList = value;
+          	}});
+
+			//this.ModelBindAndValidation(this.model, this.$el);
 			// Maintains chainability
 			return this;
 
@@ -62,23 +78,17 @@ define([
 		            //Display the results 
 		            self.$el.find('#resultsContainer').html('');
 
-		            self.resultsTemplate = _.template(ResultsSubTemplate,{
-		            	collection:self.recalledFoodCollection.toJSON(),
-		            	maxCount:self.recalledFoodCollection.totalCount
-		            });
+		            self.totalCount = self.recalledFoodCollection.totalCount;
 
-		            self.$el.find('#resultsContainer').html(self.resultsTemplate)
-
-		            //self.scrollToAnchor('numHeading');
-
+		            self.loadTemplate('resultsContainer',ResultsSubTemplate,self.recalledFoodCollection.toJSON(),self.recalledFoodCollection.totalCount,self.model);
 	            });			
 
 		},		
 		loadAdvancedSearch:function(){
 			this.loadCollection(window.gblClassificationList,'classificationSection', ClassificationTemplate,this.classficiationCollection,this.model);
 			this.loadCollection(window.gblRecallStatusList,'recallStatusSection', RecallStatusTemplate,this.recallStatusCollection,this.model);
-			this.loadCollection(window.gblRecallingFirmList,'recallFirmSection', RecallFirmTemplate,this.recallingFirmCollection,this.model);
-			this.$el.find('#distributionPatternSection').html(this.distPattern);			
+			this.$el.find('#distributionPatternSection').html(this.distPatternTemplate);	
+			this.$el.find('#stateSection').html(this.stateTemplate);		
 		},
 		loadCollection: function(selectServiceURL, sectionId, templateName, collectionName, reqModel) {
 			collectionName = new ItemsCollection();
@@ -107,32 +117,32 @@ define([
 			e.preventDefault();
 			this.model.clearModel();
 
-			var data = $('#searchContainer').find('input, select').serializeObject();
-			this.setModelDataAndNavigate(data);
+			//var data = $('#searchContainer').find('input, select').serializeObject();
+			this.setModelDataAndNavigate();
 
         },
-	    setModelDataAndNavigate: function(data) {
-			data = {
-				'searchTerms': this.searchTerms ? (_.isArray(this.searchTerms) ? this.searchTerms.join(',') : this.searchTerms) : '',
-				'classification': data.classification,
-				'recallFirm': data.recallFirm,
-				'distributionPattern': data.distributionPattern,
-				'recallStatus': data.recallStatus
+        moveNext:function(e){
+        	e.preventDefault();
+        	var skipValue = (this.model.get('skip') === this.totalCount)?this.totalCount: (this.model.get('skip') + 5);
+        	this.model.set('skip', skipValue);
+        	this.displayResults();
+        },
+        movePrev:function(e){
+        	e.preventDefault();
+        	var skipValue = (this.model.get('skip') === 0)?0: (this.model.get('skip') - 5);
+        	this.model.set('skip', skipValue);
+        	this.displayResults();        	
+        },
+	    setModelDataAndNavigate: function() {
+			var data = {
+				'searchTerms': (this.searchTerms) ? (_.isArray(this.searchTerms) ? this.searchTerms.join(',') : this.searchTerms) : '',
+				'distributionPattern': (this.stateList) ? (_.isArray(this.stateList) ? this.stateList.join(',') : this.stateList) : '',
+				'recallStatus': (this.recallStatuses) ? (_.isArray(this.recallStatuses) ? this.recallStatuses.join(',') : this.recallStatuses) : ''
 			};
+			this.model.clear();
 			this.model.set(data);
 			this.displayResults();
-		},
-		scrollToAnchor: function(anchorId) {
-				var mainContent = $(anchorId);
-				$('body,html').animate({
-					scrollTop: mainContent.offset()
-				}, 500);
-				setTimeout(function() {
-					if (mainContent) {
-						mainContent.focus();
-					}
-				}, 500);
-			},        
+		}     
 	});
 
 	// Returns the View class

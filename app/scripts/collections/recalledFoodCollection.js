@@ -26,11 +26,9 @@ define([
 						console.log("error while parsing for reaclled food collection");
 					}
 				});
-				this.remove(this.at(0));
 				return this.models;
 			} 
-        }
-		
+        }	
 
 	});
 
