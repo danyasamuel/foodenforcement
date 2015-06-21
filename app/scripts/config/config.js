@@ -33,7 +33,15 @@ require.config({
 
         geocomplete: '../vendor/geocomplete/jquery.geocomplete',
 
-        blockui: '../vendor/blockui/jquery.blockUI'        
+        blockui: '../vendor/blockui/jquery.blockUI',
+
+        sinon: '../vendor/sinonjs/sinon' ,
+
+        backboneModelBinder: '../vendor/Backbone.ModelBinder/Backbone.ModelBinder',
+
+        backboneValidateAll: '../vendor/Backbone.validateAll/Backbone.validateAll',
+
+        backboneValidation: './helpers/backboneValidation'  
         
     },
 
@@ -69,7 +77,17 @@ require.config({
             deps:['jquery'],
             exports:'geocomplete'
         },
+        blockui: {
+            "deps": ["jquery", "jqueryui"],
+            "exports": "blockui"
+        },
+        sinon: {
+            // Depends on underscore/lodash and jQuery
+            'deps': ['jquery'],
 
+            // Exports the global window.Backbone object
+            'exports': 'sinon'
+        },
         // Backbone.validateAll plugin that depends on Backbone
         backboneValidateAll: {
             'deps': ['jquery', 'underscore', 'backbone'],
@@ -86,12 +104,6 @@ require.config({
             'deps': ['jquery', 'underscore', 'backbone', 'backboneValidateAll'],
             'exports': 'backboneValidation'
         },
-
-        blockui: {
-            "deps": ["jquery", "jqueryui"],
-            "exports": "blockui"
-        }      
-
     }
 
 });

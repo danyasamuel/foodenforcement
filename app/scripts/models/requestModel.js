@@ -13,19 +13,30 @@ define([
 
 		// Default values for all of the Model attributes
 		defaults: {
-
+			searchTerms:'',
+			classification:'',
+			recallFirm:'',
+			distributionPattern:'',
+			recallStatus:''
 		},
 
-		// Model Constructor
-		initialize: function() {
-
+		clearModel: function() {
+			this.set({
+				searchTerms:'',
+				classification:'',
+				recallFirm:'',
+				distributionPattern:'',
+				recallStatus:''
+			});
 		},
 
-		// Parse model attributes 
-		parse: function(data) {
-			
+		generateURL: function() {
+			var serviceURL = '';
+			serviceURL = window.gblResults + 'search=product_description:' + this.get('searchTerms').replace(',','+');
+			serviceURL = serviceURL + '&limit=5'
+
+			return serviceURL
 		}
-
 	});
 
 	// Returns the Model class

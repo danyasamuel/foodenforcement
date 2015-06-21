@@ -3,7 +3,7 @@
                             Classification
                         </label>
                         <select id="select-classification" aria-required="true" name="classification" >
-                          <option value="0">Select a classification</option>
+                          <option value="">Select a classification</option>
                           <% for (var i=0; i < data.length; i++) {  %>
                             <option value="<%- data[i].name%>"><%- data[i].name%></option>
                           <%}%>

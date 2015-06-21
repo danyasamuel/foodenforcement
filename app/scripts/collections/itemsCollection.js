@@ -24,12 +24,12 @@ define([
 						itemModel.set({name: item.term});				
 						self.push(itemModel);
 					} catch (e) {
-						ExceptionHandler.errorhandler(e);
+						console.log("error while parsing for item collection");
 					}
 				});
 				return this.models;
 			} else {
-				ExceptionHandler.redirectToErrorPage();
+				console.log("No response from the openfda api");
 			}
 		},
 		comparator: function (a) {
